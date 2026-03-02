@@ -36,9 +36,8 @@ export function Resume() {
             startIcon={<GetAppIcon />}
             variant="contained"
             size="large"
-            href="https://example.com/cv.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/Yigal-Krigel-CV.docx"
+            download="Yigal-Krigel-CV.docx"
           >
             Download CV
           </Button>
