@@ -25,13 +25,10 @@ function resolveAutoTheme(): 'light' | 'dark' {
 
 function getThemeBrightness(): number {
   const hour = new Date().getHours();
-  if (hour < AUTO_THEME_MORNING_HOUR) {
-    // 0 at midnight (00:00), 1 at noon (12:00) - progressively brighter
-    return hour / AUTO_THEME_MORNING_HOUR;
-  } else {
-    // 1 at noon (12:00), 0 at midnight (00:00) - progressively darker
-    return (24 - hour) / AUTO_THEME_MORNING_HOUR;
-  }
+  // Create a smooth brightness curve throughout the day:
+  // 00:00 = 0 (darkest), 06:00 = 0.5, 12:00 = 1 (brightest), 18:00 = 0.5, 23:00 ≈ 0
+  // Formula: 1 - |hour - 12| / 12
+  return Math.max(0, 1 - Math.abs(hour - AUTO_THEME_MORNING_HOUR) / AUTO_THEME_MORNING_HOUR);
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
