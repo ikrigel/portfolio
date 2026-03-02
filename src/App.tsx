@@ -17,14 +17,21 @@ import { LogsViewer } from '@/components/features/LogsViewer';
 import { SettingsPanel } from '@/components/features/SettingsPanel';
 
 function MuiThemeWrapper({ children }: { children: ReactNode }) {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme, brightness } = useTheme();
   const muiTheme = resolvedTheme === 'dark' ? darkTheme : lightTheme;
 
   return (
-    <MuiThemeProvider theme={muiTheme}>
-      <CssBaseline />
-      {children}
-    </MuiThemeProvider>
+    <div
+      style={{
+        '--brightness': brightness.toString(),
+        '--brightness-percent': `${Math.round(brightness * 100)}%`,
+      } as any}
+    >
+      <MuiThemeProvider theme={muiTheme}>
+        <CssBaseline />
+        {children}
+      </MuiThemeProvider>
+    </div>
   );
 }
 

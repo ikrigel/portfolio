@@ -12,6 +12,7 @@ import { Navigation } from './Navigation';
 import { MobileMenu } from './MobileMenu';
 import { ThemeSwitcher } from '@/components/features/ThemeSwitcher';
 import { useLogger } from '@/hooks/useLogger';
+import { PERSONAL_INFO } from '@/utils/constants';
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -71,7 +72,7 @@ export function Header() {
                 },
               }}
             >
-              ikrigel
+              {PERSONAL_INFO.name}
             </Button>
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>

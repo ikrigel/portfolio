@@ -122,7 +122,18 @@ export function ContactForm() {
       log('info', 'contact_form_submit_success', '');
     } catch (error) {
       setStatus('error');
-      const errorMsg = error instanceof Error ? error.message : 'Failed to send message';
+      let errorMsg = 'Failed to send message';
+
+      if (error instanceof Error) {
+        errorMsg = error.message;
+        // Check for common EmailJS errors
+        if (errorMsg.includes('400')) {
+          errorMsg = 'EmailJS template configuration error. Check that template variables match your form fields.';
+        } else if (errorMsg.includes('auth')) {
+          errorMsg = 'EmailJS authentication failed. Check your Service ID, Template ID, and Public Key.';
+        }
+      }
+
       setNotificationMessage(errorMsg);
       setNotificationSeverity('error');
       setNotificationOpen(true);

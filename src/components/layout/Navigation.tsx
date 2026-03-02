@@ -6,6 +6,15 @@ export function Navigation() {
   const sectionIds = NAV_ITEMS.map((item) => item.href.slice(1));
   const activeId = useScrollSpy(sectionIds);
 
+  const handleNavClick = (e: React.MouseEvent<HTMLButtonElement>, sectionId: string) => {
+    e.preventDefault();
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+      window.history.pushState(null, '', `#${sectionId}`);
+    }
+  };
+
   return (
     <Box
       component="nav"
@@ -22,13 +31,14 @@ export function Navigation() {
         return (
           <Button
             key={item.href}
-            href={item.href}
+            onClick={(e) => handleNavClick(e, itemId)}
             color={isActive ? 'primary' : 'inherit'}
             sx={{
               fontWeight: isActive ? 600 : 400,
               borderBottom: isActive ? '2px solid' : 'none',
               borderColor: 'primary.main',
               fontSize: '0.95rem',
+              cursor: 'pointer',
               '&:hover': {
                 fontWeight: 600,
               },

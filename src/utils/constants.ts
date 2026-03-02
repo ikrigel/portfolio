@@ -13,7 +13,7 @@ export const AUTO_THEME_CHECK_INTERVAL_MS = 5 * 60 * 1000;
 export const AUTO_THEME_MORNING_HOUR = 12;
 
 export const PERSONAL_INFO = {
-  name: 'ikrigel',
+  name: 'Igal Krigel',
   email: 'ikrigel@gmail.com',
   github: 'https://github.com/ikrigel',
   linkedin: 'https://www.linkedin.com/in/ikrigel',
