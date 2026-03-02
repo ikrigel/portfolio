@@ -100,8 +100,8 @@ export function ContactForm() {
 
     try {
       await sendContactEmail({
-        from_name: formData.name,
-        from_email: formData.email,
+        sender_name: formData.name,
+        sender_email: formData.email,
         subject: formData.subject,
         message: formData.message,
       });

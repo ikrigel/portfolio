@@ -9,8 +9,8 @@ if (PUBLIC_KEY) {
 }
 
 export interface EmailPayload {
-  from_name: string;
-  from_email: string;
+  sender_name: string;
+  sender_email: string;
   subject: string;
   message: string;
 }

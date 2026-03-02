@@ -18,8 +18,8 @@ This error typically means your EmailJS template variables don't match the form 
 Your template MUST use these exact variable names (case-sensitive):
 
 ```
-From Name: {{from_name}}
-From Email: {{from_email}}
+Sender Name: {{sender_name}}
+Sender Email: {{sender_email}}
 Subject: {{subject}}
 Message: {{message}}
 ```
@@ -27,8 +27,8 @@ Message: {{message}}
 ### Step 3: Example Template Content
 
 ```
-Name: {{from_name}}
-Email: {{from_email}}
+Name: {{sender_name}}
+Email: {{sender_email}}
 Subject: {{subject}}
 
 Message:
@@ -48,8 +48,8 @@ The form sends this structure:
 
 ```javascript
 {
-  from_name: "User's Name",
-  from_email: "user@example.com",
+  sender_name: "User's Name",
+  sender_email: "user@example.com",
   subject: "Contact Subject",
   message: "User's message text"
 }
@@ -62,9 +62,10 @@ The form sends this structure:
 
 ### Issue: 400 Bad Request Error
 **Solution:**
-1. Check that all variable names match exactly
-2. Variable names are case-sensitive: `from_name` NOT `FromName` or `from_Name`
+1. Check that all variable names match exactly: `sender_name`, `sender_email`, `subject`, `message`
+2. Variable names are case-sensitive: `sender_name` NOT `SenderName` or `sender_Name`
 3. Make sure the template exists and Template ID is correct in .env.local
+4. Update your EmailJS template to use `{{sender_name}}` and `{{sender_email}}` instead of old names
 
 ### Issue: Email sent but missing information
 **Solution:** Check that your template HTML uses all the variables you're sending
@@ -74,7 +75,7 @@ The form sends this structure:
 - [ ] EmailJS account created
 - [ ] Email Service configured (Gmail, SMTP, etc.)
 - [ ] Template created with correct name
-- [ ] Template uses: `{{from_name}}`, `{{from_email}}`, `{{subject}}`, `{{message}}`
+- [ ] Template uses: `{{sender_name}}`, `{{sender_email}}`, `{{subject}}`, `{{message}}`
 - [ ] Service ID is in .env.local
 - [ ] Template ID is in .env.local
 - [ ] Public Key is in .env.local
