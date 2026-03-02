@@ -29,20 +29,19 @@ export function Hero() {
           }}
         >
           <Box
+            component="img"
+            src="/pictures/Igal-Krigel.jpeg"
+            alt={PERSONAL_INFO.name}
             sx={{
               width: { xs: 120, md: 150 },
               height: { xs: 120, md: 150 },
               borderRadius: '50%',
-              background: 'linear-gradient(135deg, primary.main, secondary.main)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '3.5rem',
-              fontWeight: 700,
+              objectFit: 'cover',
+              border: '3px solid',
+              borderColor: 'primary.main',
+              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
             }}
-          >
-            {PERSONAL_INFO.name.charAt(0).toUpperCase()}
-          </Box>
+          />
 
           <Box>
             <Typography
