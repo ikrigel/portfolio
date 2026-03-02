@@ -9,6 +9,7 @@ export function Resume() {
       component="section"
       sx={{
         py: { xs: 4, md: 8 },
+        backgroundColor: 'background.default',
       }}
     >
       <Container maxWidth="lg">

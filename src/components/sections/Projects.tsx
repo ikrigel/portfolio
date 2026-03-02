@@ -39,7 +39,7 @@ export function Projects() {
       component="section"
       sx={{
         py: { xs: 4, md: 8 },
-        backgroundColor: 'action.hover',
+        backgroundColor: 'background.paper',
       }}
     >
       <Container maxWidth="lg">
