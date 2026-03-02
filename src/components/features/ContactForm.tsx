@@ -111,13 +111,23 @@ export function ContactForm() {
       setNotificationSeverity('success');
       setNotificationOpen(true);
 
-      setFormData({
-        name: '',
-        email: '',
+      // Clear subject and message, but keep name and email
+      setFormData((prev) => ({
+        ...prev,
         subject: '',
         message: '',
+      }));
+
+      // Update saved draft: keep name & email, remove subject & message
+      updateSettings({
+        contactFormData: {
+          name: formData.name,
+          email: formData.email,
+          subject: '',
+          message: '',
+          savedAt: new Date().toISOString(),
+        },
       });
-      updateSettings({ contactFormData: null });
 
       log('info', 'contact_form_submit_success', '');
     } catch (error) {
@@ -162,6 +172,7 @@ export function ContactForm() {
         <TextField
           label="Name"
           name="name"
+          placeholder="Your full name"
           value={formData.name}
           onChange={handleChange}
           fullWidth
@@ -174,6 +185,7 @@ export function ContactForm() {
           label="Email"
           name="email"
           type="email"
+          placeholder="your.email@example.com"
           value={formData.email}
           onChange={handleChange}
           fullWidth
@@ -185,6 +197,7 @@ export function ContactForm() {
         <TextField
           label="Subject"
           name="subject"
+          placeholder="What is this about?"
           value={formData.subject}
           onChange={handleChange}
           fullWidth
@@ -196,6 +209,7 @@ export function ContactForm() {
         <TextField
           label="Message"
           name="message"
+          placeholder="Your message here (minimum 20 characters)"
           value={formData.message}
           onChange={handleChange}
           multiline
