@@ -47,7 +47,7 @@ export const PROJECTS: Project[] = [
     description: 'Advanced Tic-Tac-Toe game with AI opponent using minimax algorithm and game analytics.',
     technologies: ['React', 'TypeScript', 'Game AI', 'Vercel'],
     liveUrl: 'https://tic-tac-toe-pro-polo.base44.app',
-    githubUrl: 'https://github.com/ikrigel/tic-tac-toe-pro',
+    githubUrl: 'https://github.com/ikrigel/',
     featured: false,
     category: 'ai',
   },
