@@ -42,7 +42,7 @@ export function About() {
                   color: 'text.secondary',
                 }}
               >
-                I'm a full-stack developer and AI integration specialist based in Petah Tiqva, EMEA.
+                I'm a full-stack developer and AI integration specialist based in Ramt Zvi, Israel, EMEA.
                 With over 4 years of experience, I've built 50+ projects ranging from web applications
                 to automation systems and AI-powered tools.
               </Typography>
