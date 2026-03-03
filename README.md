@@ -170,7 +170,7 @@ git push origin main
 - 🔗 **GitHub:** [@ikrigel](https://github.com/ikrigel)
 - 💼 **LinkedIn:** [ikrigel](https://linkedin.com/in/ikrigel)
 - ✉️ **Email:** ikrigel@gmail.com
-- 📍 **Location:** Petah Tiqva, EMEA
+- 📍 **Location:** Ramat Zvi, Israel, EMEA
 
 **50+ projects delivered**. Passionate about clean code, modern development, and AI integration.
 
