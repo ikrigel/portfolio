@@ -45,11 +45,16 @@ function MuiThemeWrapper({ children }: { children: ReactNode }) {
 
 function SitewideParallax() {
   const [offset, setOffset] = useState(0);
+  const { brightness } = useTheme();
+
   useEffect(() => {
     const onScroll = () => setOffset(window.scrollY * 0.3);
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
+  // Overlay opacity: 0.82 at midnight (brightness=0) → 0.45 at noon (brightness=1)
+  const overlayOpacity = 0.82 - brightness * 0.37;
 
   return (
     <div
@@ -58,17 +63,16 @@ function SitewideParallax() {
         inset: 0,
         backgroundImage: 'url(/pictures/neural-network.jpg)',
         backgroundSize: 'cover',
-        // Shift the image within the fixed container — container never moves so no gaps
         backgroundPosition: `center calc(50% + ${offset}px)`,
         zIndex: -1,
         pointerEvents: 'none',
       }}
     >
-      {/* Dark overlay to keep text readable */}
       <div style={{
         position: 'absolute',
         inset: 0,
-        background: 'rgba(8, 8, 12, 0.72)',
+        background: `rgba(8, 8, 12, ${overlayOpacity.toFixed(2)})`,
+        transition: 'background 2s ease',
       }} />
     </div>
   );
