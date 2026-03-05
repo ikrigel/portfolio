@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { ThemeProvider as MuiThemeProvider, CssBaseline, createTheme } from '@mui/material';
 import { HashRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
@@ -42,15 +43,44 @@ function MuiThemeWrapper({ children }: { children: ReactNode }) {
   );
 }
 
-function MainLayout() {
+function SitewideParallax() {
+  const [offset, setOffset] = useState(0);
+  useEffect(() => {
+    const onScroll = () => setOffset(window.scrollY * 0.3);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
     <div
       style={{
-        display: 'flex',
-        flexDirection: 'column',
-        minHeight: '100vh',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundImage: 'url(/pictures/neural-network.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        transform: `translateY(${offset}px)`,
+        zIndex: -1,
+        pointerEvents: 'none',
       }}
     >
+      {/* Dark overlay to keep text readable */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        background: 'rgba(8, 8, 12, 0.72)',
+      }} />
+    </div>
+  );
+}
+
+function MainLayout() {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <SitewideParallax />
       <Header />
       <main style={{ flex: 1 }}>
         <Outlet />

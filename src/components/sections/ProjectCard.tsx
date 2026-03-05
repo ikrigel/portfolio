@@ -73,16 +73,18 @@ export function ProjectCard({ project }: ProjectCardProps) {
       </CardContent>
 
       <CardActions sx={{ pt: 0, justifyContent: 'space-between' }}>
-        <Button
-          href={project.githubUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          size="small"
-          startIcon={<GitHubIcon />}
-          variant="outlined"
-        >
-          Code
-        </Button>
+        {project.githubUrl && (
+          <Button
+            href={project.githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            size="small"
+            startIcon={<GitHubIcon />}
+            variant="outlined"
+          >
+            Code
+          </Button>
+        )}
 
         {project.liveUrl && (
           <Button

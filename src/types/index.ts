@@ -14,7 +14,7 @@ export interface Project {
   description: string;
   technologies: string[];
   liveUrl?: string;
-  githubUrl: string;
+  githubUrl?: string;
   featured: boolean;
   category: 'web' | 'automation' | 'ai' | 'tool';
 }

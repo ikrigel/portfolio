@@ -9,7 +9,6 @@ export function Contact() {
       component="section"
       sx={{
         py: { xs: 4, md: 8 },
-        backgroundColor: 'background.paper',
       }}
     >
       <Container maxWidth="md">

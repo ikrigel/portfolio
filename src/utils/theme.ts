@@ -27,112 +27,67 @@ function interpolateColor(colorA: string, colorB: string, factor: number): strin
   return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
 }
 
+const sharedComponents = {
+  MuiButton: { styleOverrides: { root: { textTransform: 'none', borderRadius: 8 } } },
+  MuiCard: { styleOverrides: { root: { borderRadius: 12, backgroundColor: '#1a1f2e' } } },
+  MuiPaper: { styleOverrides: { root: { backgroundColor: '#1a1f2e' } } },
+  MuiChip: { styleOverrides: { root: { borderRadius: 6 } } },
+} as const;
+
+const typography = {
+  fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+  h1: { fontWeight: 700 },
+  h2: { fontWeight: 600 },
+  h3: { fontWeight: 600 },
+  h4: { fontWeight: 600 },
+  h5: { fontWeight: 600 },
+  h6: { fontWeight: 500 },
+} as const;
+
 /**
- * Create a theme that interpolates between light and dark based on brightness (0-1)
- * brightness: 0 = dark, 0.5 = neutral, 1 = light
+ * Create a theme that interpolates accent colors based on brightness (0-1)
+ * Cards always use dark backgrounds; only primary/secondary colors change.
  */
 export function createAutoTheme(brightness: number): ThemeOptions {
-  // Light theme colors
-  const lightPrimary = '#1976d2';
-  const lightSecondary = '#9c27b0';
-  const lightBg = '#ffffff';
-  const lightBgDefault = '#f5f5f5';
-
-  // Dark theme colors
-  const darkPrimary = '#00bcd4';
-  const darkSecondary = '#ce93d8';
-  const darkBg = '#1a1a1a';
-  const darkBgDefault = '#0a0a0a';
-
-  // Interpolate based on brightness: 0 = dark, 1 = light
-  const primary = interpolateColor(darkPrimary, lightPrimary, brightness);
-  const secondary = interpolateColor(darkSecondary, lightSecondary, brightness);
-  const bg = interpolateColor(darkBg, lightBg, brightness);
-  const bgDefault = interpolateColor(darkBgDefault, lightBgDefault, brightness);
+  // Interpolate accent colors between dark cyan and light blue based on brightness
+  const primary = interpolateColor('#00bcd4', '#1976d2', brightness);
+  const secondary = interpolateColor('#ce93d8', '#9c27b0', brightness);
 
   return {
     palette: {
-      mode: brightness < 0.5 ? 'dark' : 'light',
+      mode: 'dark',  // Always dark so text is readable on dark card backgrounds
       primary: { main: primary },
       secondary: { main: secondary },
       background: {
-        default: bgDefault,
-        paper: bg,
+        default: 'transparent',
+        paper: '#1a1f2e',   // Fixed dark card background for all brightness levels
       },
     },
-    typography: {
-      fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-      h1: { fontWeight: 700 },
-      h2: { fontWeight: 600 },
-      h3: { fontWeight: 600 },
-      h4: { fontWeight: 600 },
-      h5: { fontWeight: 600 },
-      h6: { fontWeight: 500 },
-    },
-    components: {
-      MuiButton: {
-        styleOverrides: {
-          root: { textTransform: 'none', borderRadius: 8 },
-        },
-      },
-      MuiCard: {
-        styleOverrides: {
-          root: { borderRadius: 12 },
-        },
-      },
-      MuiChip: {
-        styleOverrides: {
-          root: { borderRadius: 6 },
-        },
-      },
-    },
+    typography,
+    components: sharedComponents,
   };
 }
 
 export const lightTheme = createTheme({
   palette: {
-    mode: 'light',
+    mode: 'dark',           // Always dark mode so text is white on dark cards
     primary: {
-      main: '#1976d2',
-      light: '#42a5f5',
-      dark: '#1565c0',
+      main: '#42a5f5',
+      light: '#80d4ff',
+      dark: '#1976d2',
     },
     secondary: {
-      main: '#9c27b0',
-      light: '#ba68c8',
-      dark: '#7b1fa2',
+      main: '#ce93d8',
+      light: '#e1bee7',
+      dark: '#ab47bc',
     },
     background: {
-      default: '#f5f5f5',
-      paper: '#ffffff',
+      default: 'transparent',
+      paper: '#1a1f2e',
     },
   },
-  typography: {
-    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-    h1: { fontWeight: 700 },
-    h2: { fontWeight: 600 },
-    h3: { fontWeight: 600 },
-    h4: { fontWeight: 600 },
-    h5: { fontWeight: 600 },
-    h6: { fontWeight: 500 },
-  },
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: { textTransform: 'none', borderRadius: 8 },
-      },
-    },
-    MuiCard: {
-      styleOverrides: {
-        root: { borderRadius: 12 },
-      },
-    },
-    MuiChip: {
-      styleOverrides: {
-        root: { borderRadius: 6 },
-      },
-    },
-  },
+  typography,
+  components: sharedComponents,
 });
 
 export const darkTheme = createTheme({
@@ -149,34 +104,10 @@ export const darkTheme = createTheme({
       dark: '#ab47bc',
     },
     background: {
-      default: '#0a0a0a',
-      paper: '#1a1a1a',
+      default: 'transparent',
+      paper: '#111520',
     },
   },
-  typography: {
-    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
-    h1: { fontWeight: 700 },
-    h2: { fontWeight: 600 },
-    h3: { fontWeight: 600 },
-    h4: { fontWeight: 600 },
-    h5: { fontWeight: 600 },
-    h6: { fontWeight: 500 },
-  },
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: { textTransform: 'none', borderRadius: 8 },
-      },
-    },
-    MuiCard: {
-      styleOverrides: {
-        root: { borderRadius: 12 },
-      },
-    },
-    MuiChip: {
-      styleOverrides: {
-        root: { borderRadius: 6 },
-      },
-    },
-  },
+  typography,
+  components: sharedComponents,
 });

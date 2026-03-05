@@ -3,11 +3,8 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import { PERSONAL_INFO } from '@/utils/constants';
-import { useParallax } from '@/hooks/useParallax';
 
 export function Hero() {
-  const parallaxOffset = useParallax();
-
   return (
     <Box
       id="hero"
@@ -17,38 +14,10 @@ export function Hero() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        position: 'relative',
-        overflow: 'hidden',
         py: 4,
       }}
     >
-      {/* Parallax Background */}
-      <Box
-        sx={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundImage: 'url(/pictures/neural-network.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          transform: `translateY(${parallaxOffset}px)`,
-          transition: 'transform 0.1s ease-out',
-          zIndex: 0,
-          '&::after': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'radial-gradient(circle at center, rgba(10, 10, 10, 0.3) 0%, rgba(10, 10, 10, 0.6) 100%)',
-            zIndex: 1,
-          },
-        }}
-      />
-      <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 2 }}>
+      <Container maxWidth="lg">
         <Box
           sx={{
             textAlign: 'center',
@@ -69,7 +38,7 @@ export function Hero() {
               objectFit: 'cover',
               border: '3px solid',
               borderColor: 'primary.main',
-              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
             }}
           />
 
@@ -81,6 +50,8 @@ export function Hero() {
                 fontWeight: 700,
                 fontSize: { xs: '2rem', md: '3rem' },
                 mb: 1,
+                color: '#ffffff',
+                textShadow: '0 2px 8px rgba(0,0,0,0.6)',
               }}
             >
               {PERSONAL_INFO.name}
@@ -101,7 +72,7 @@ export function Hero() {
             <Typography
               variant="body1"
               sx={{
-                color: 'text.secondary',
+                color: 'rgba(255,255,255,0.8)',
                 fontSize: { xs: '0.95rem', md: '1.1rem' },
                 maxWidth: 600,
                 mx: 'auto',
@@ -113,14 +84,7 @@ export function Hero() {
             </Typography>
           </Box>
 
-          <Stack
-            direction="row"
-            spacing={2}
-            sx={{
-              justifyContent: 'center',
-              flexWrap: 'wrap',
-            }}
-          >
+          <Stack direction="row" spacing={2} sx={{ justifyContent: 'center', flexWrap: 'wrap' }}>
             <Button
               href={PERSONAL_INFO.github}
               target="_blank"
@@ -154,12 +118,7 @@ export function Hero() {
               },
             }}
           >
-            <KeyboardArrowDownIcon
-              sx={{
-                fontSize: 32,
-                color: 'primary.main',
-              }}
-            />
+            <KeyboardArrowDownIcon sx={{ fontSize: 32, color: 'primary.main' }} />
           </Box>
         </Box>
       </Container>
