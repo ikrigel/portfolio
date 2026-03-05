@@ -1,5 +1,4 @@
 import { createTheme } from '@mui/material/styles';
-import type { ThemeOptions } from '@mui/material/styles';
 
 /**
  * Interpolate between two colors based on a 0-1 factor
@@ -29,8 +28,8 @@ function interpolateColor(colorA: string, colorB: string, factor: number): strin
 
 const sharedComponents = {
   MuiButton: { styleOverrides: { root: { textTransform: 'none', borderRadius: 8 } } },
-  MuiCard: { styleOverrides: { root: { borderRadius: 12, backgroundColor: '#1a1f2e' } } },
-  MuiPaper: { styleOverrides: { root: { backgroundColor: '#1a1f2e' } } },
+  MuiCard: { styleOverrides: { root: { borderRadius: 12 } } },
+  MuiPaper: { styleOverrides: { root: {} } },
   MuiChip: { styleOverrides: { root: { borderRadius: 6 } } },
 } as const;
 
@@ -45,69 +44,37 @@ const typography = {
 } as const;
 
 /**
- * Create a theme that interpolates accent colors based on brightness (0-1)
- * Cards always use dark backgrounds; only primary/secondary colors change.
+ * Build a fully brightness-reactive theme (0 = midnight dark, 1 = midday lighter).
+ * All colors — accent, card backgrounds, text — respond to brightness.
+ *
+ * Used by all three theme modes:
+ *   auto  → real time-based brightness
+ *   light → fixed brightness 0.90
+ *   dark  → fixed brightness 0.05
  */
-export function createAutoTheme(brightness: number): ThemeOptions {
-  // Interpolate accent colors between dark cyan and light blue based on brightness
-  const primary = interpolateColor('#00bcd4', '#1976d2', brightness);
-  const secondary = interpolateColor('#ce93d8', '#9c27b0', brightness);
+export function createAutoTheme(brightness: number): ReturnType<typeof createTheme> {
+  // Accent colors: cyan (dark) → blue (light)
+  const primary   = interpolateColor('#00bcd4', '#42a5f5', brightness);
+  const secondary = interpolateColor('#ab47bc', '#ce93d8', brightness);
 
-  return {
+  // Card / paper background: very dark navy → slightly lighter navy
+  const paperBg = interpolateColor('#0c0f1a', '#252d45', brightness);
+
+  return createTheme({
     palette: {
-      mode: 'dark',  // Always dark so text is readable on dark card backgrounds
-      primary: { main: primary },
+      mode: 'dark',   // Always dark text-on-dark so cards stay readable
+      primary:   { main: primary },
       secondary: { main: secondary },
       background: {
         default: 'transparent',
-        paper: '#1a1f2e',   // Fixed dark card background for all brightness levels
+        paper: paperBg,
       },
     },
     typography,
     components: sharedComponents,
-  };
+  });
 }
 
-export const lightTheme = createTheme({
-  palette: {
-    mode: 'dark',           // Always dark mode so text is white on dark cards
-    primary: {
-      main: '#42a5f5',
-      light: '#80d4ff',
-      dark: '#1976d2',
-    },
-    secondary: {
-      main: '#ce93d8',
-      light: '#e1bee7',
-      dark: '#ab47bc',
-    },
-    background: {
-      default: 'transparent',
-      paper: '#1a1f2e',
-    },
-  },
-  typography,
-  components: sharedComponents,
-});
-
-export const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#00bcd4',
-      light: '#4dd0e1',
-      dark: '#0097a7',
-    },
-    secondary: {
-      main: '#ce93d8',
-      light: '#e1bee7',
-      dark: '#ab47bc',
-    },
-    background: {
-      default: 'transparent',
-      paper: '#111520',
-    },
-  },
-  typography,
-  components: sharedComponents,
-});
+// Convenience aliases used in App.tsx for manual light / dark selection
+export const lightTheme = createAutoTheme(0.90);
+export const darkTheme  = createAutoTheme(0.05);

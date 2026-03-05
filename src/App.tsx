@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import { ThemeProvider as MuiThemeProvider, CssBaseline, createTheme } from '@mui/material';
+import { ThemeProvider as MuiThemeProvider, CssBaseline } from '@mui/material';
 import { HashRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import { LoggerProvider } from '@/contexts/LoggerContext';
 import { SettingsProvider } from '@/contexts/SettingsContext';
 import { ThemeProvider, useTheme } from '@/contexts/ThemeContext';
-import { lightTheme, darkTheme, createAutoTheme } from '@/utils/theme';
+import { createAutoTheme } from '@/utils/theme';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Hero } from '@/components/sections/Hero';
@@ -20,13 +20,13 @@ import { SettingsPanel } from '@/components/features/SettingsPanel';
 function MuiThemeWrapper({ children }: { children: ReactNode }) {
   const { themeMode, brightness } = useTheme();
 
-  // For auto mode, interpolate colors based on brightness throughout the day
-  // For manual modes, use fixed themes
-  const muiTheme = themeMode === 'auto'
-    ? createTheme(createAutoTheme(brightness))
-    : themeMode === 'dark'
-      ? darkTheme
-      : lightTheme;
+  // Map all three modes through createAutoTheme so cards always respond to brightness
+  const effectiveBrightness =
+    themeMode === 'light' ? 0.90 :
+    themeMode === 'dark'  ? 0.05 :
+    brightness;                     // auto → real time-based value
+
+  const muiTheme = createAutoTheme(effectiveBrightness);
 
   return (
     <div
