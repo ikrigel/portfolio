@@ -55,14 +55,11 @@ function SitewideParallax() {
     <div
       style={{
         position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
+        inset: 0,
         backgroundImage: 'url(/pictures/neural-network.jpg)',
         backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        transform: `translateY(${offset}px)`,
+        // Shift the image within the fixed container — container never moves so no gaps
+        backgroundPosition: `center calc(50% + ${offset}px)`,
         zIndex: -1,
         pointerEvents: 'none',
       }}
