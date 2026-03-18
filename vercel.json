@@ -14,7 +14,7 @@
     },
     {
       "src": "/.*\\.docx$",
-      "headers": { "Cache-Control": "public, max-age=86400" }
+      "headers": { "Cache-Control": "public, max-age=3600" }
     },
     { "src": "/.*", "dest": "/index.html" }
   ]
