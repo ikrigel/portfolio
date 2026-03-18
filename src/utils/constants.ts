@@ -17,7 +17,7 @@ export const PERSONAL_INFO = {
   email: 'ikrigel@gmail.com',
   github: 'https://github.com/ikrigel',
   linkedin: 'https://www.linkedin.com/in/ikrigel',
-  location: 'Petah Tiqva, EMEA',
+  location: 'Ramat Zvi, EMEA',
 } as const;
 
 export const NAV_ITEMS = [
