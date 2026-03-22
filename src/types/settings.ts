@@ -17,6 +17,7 @@ export interface AppSettings {
   emailNotifications: boolean;
   lastVisitedSection: string;
   contactFormData: ContactFormDraft | null;
+  autoThemeStrength: number; // 0-1, controls "lingering darkness" in auto theme
 }
 
 export const DEFAULT_SETTINGS: AppSettings = {
@@ -26,4 +27,5 @@ export const DEFAULT_SETTINGS: AppSettings = {
   emailNotifications: true,
   lastVisitedSection: 'hero',
   contactFormData: null,
+  autoThemeStrength: 0.5,
 };

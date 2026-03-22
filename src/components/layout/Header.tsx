@@ -88,7 +88,10 @@ export function Header() {
 
               <IconButton
                 onClick={handleMenuOpen}
-                sx={{ display: { xs: 'flex', md: 'none' } }}
+                sx={{
+                  display: { xs: 'flex', md: 'none' },
+                  color: 'rgba(255, 255, 255, 0.9)',
+                }}
                 size="large"
               >
                 <MenuIcon />

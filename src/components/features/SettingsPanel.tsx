@@ -17,6 +17,7 @@ import {
   DialogContent,
   DialogActions,
   Alert,
+  Slider,
 } from '@mui/material';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import PublishIcon from '@mui/icons-material/Publish';
@@ -33,6 +34,12 @@ export function SettingsPanel() {
   const handleThemeChange = (value: string) => {
     updateSettings({ theme: value as any });
     log('info', 'settings_theme_changed', `Changed to ${value}`);
+  };
+
+  const handleStrengthChange = (_: Event, value: number | number[]) => {
+    const strength = typeof value === 'number' ? value : value[0];
+    updateSettings({ autoThemeStrength: strength });
+    log('verbose', 'settings_auto_theme_strength_changed', `Changed to ${Math.round(strength * 100)}%`);
   };
 
   const handleLogLevelChange = (value: string) => {
@@ -116,6 +123,29 @@ export function SettingsPanel() {
               <MenuItem value="auto">Auto (Time-based)</MenuItem>
             </Select>
           </FormControl>
+
+          {settings.theme === 'auto' && (
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="body2" sx={{ mb: 1, fontWeight: 500 }}>
+                Darkness Strength: {Math.round(settings.autoThemeStrength * 100)}%
+              </Typography>
+              <Slider
+                value={settings.autoThemeStrength}
+                min={0}
+                max={1}
+                step={0.05}
+                onChange={handleStrengthChange}
+                marks={[
+                  { value: 0, label: 'Fast' },
+                  { value: 0.5, label: 'Normal' },
+                  { value: 1, label: 'Lingering' },
+                ]}
+              />
+              <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
+                Controls how long darkness lingers at dawn and dusk
+              </Typography>
+            </Box>
+          )}
 
           <FormControlLabel
             control={

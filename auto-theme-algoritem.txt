@@ -1,0 +1,51 @@
+
+yes
+Completed 1 step
+You can expose the curve strength as a simple 0–1 setting and wire it to UI (slider/range input), then feed it into getLingeringDarkness.
+
+1. Theme function accepting strength
+ts
+export function getTimeBasedTheme(date = new Date(), strength = 0.5) {
+  const darkness = getLingeringDarkness(date, strength); // 0..1
+
+  const background = lerpColor("#FFFFFF", "#000011", darkness);
+  const text = lerpColor("#000000", "#FFFFFF", darkness);
+
+  return {
+    darkness,
+    background,
+    text,
+  };
+}
+2. Hook up a slider (vanilla example)
+xml
+<input
+  id="curveStrength"
+  type="range"
+  min="0"
+  max="1"
+  step="0.05"
+  value="0.5"
+/>
+ts
+const strengthInput = document.getElementById(
+  "curveStrength"
+) as HTMLInputElement;
+
+let strength = parseFloat(strengthInput.value);
+
+strengthInput.addEventListener("input", () => {
+  strength = parseFloat(strengthInput.value);
+  applyTheme(); // re-render with new strength
+});
+
+function applyTheme() {
+  const theme = getTimeBasedTheme(new Date(), strength);
+  const root = document.documentElement;
+  root.style.setProperty("--bg-color", theme.background);
+  root.style.setProperty("--text-color", theme.text);
+}
+
+applyTheme();
+setInterval(applyTheme, 5 * 1000);
+Users can now control how strongly the curve “lingers” in light/dark.

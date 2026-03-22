@@ -6,7 +6,7 @@ import {
 } from 'react';
 import type { ReactNode } from 'react';
 import type { ThemeMode } from '@/types';
-import { AUTO_THEME_CHECK_INTERVAL_MS, AUTO_THEME_MORNING_HOUR } from '@/utils/constants';
+import { AUTO_THEME_CHECK_INTERVAL_MS } from '@/utils/constants';
 import { useSettings } from './SettingsContext';
 
 interface ThemeContextValue {
@@ -18,29 +18,46 @@ interface ThemeContextValue {
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-function resolveAutoTheme(): 'light' | 'dark' {
-  const hour = new Date().getHours();
-  return hour < AUTO_THEME_MORNING_HOUR ? 'light' : 'dark';
+function resolveAutoTheme(brightness: number): 'light' | 'dark' {
+  // Switch to light theme when brightness > 0.5, otherwise stay dark
+  return brightness > 0.5 ? 'light' : 'dark';
 }
 
-function getThemeBrightness(): number {
-  const hour = new Date().getHours();
-  // Create a smooth brightness curve throughout the day:
-  // 00:00 = 0 (darkest), 06:00 = 0.5, 12:00 = 1 (brightest), 18:00 = 0.5, 23:00 ≈ 0
-  // Formula: 1 - |hour - 12| / 12
-  return Math.max(0, 1 - Math.abs(hour - AUTO_THEME_MORNING_HOUR) / AUTO_THEME_MORNING_HOUR);
+/**
+ * Calculate darkness (0 = bright/noon, 1 = dark/midnight) using a smooth cosine curve
+ * with power-based "lingering" effect controlled by strength.
+ *
+ * strength=0: Pure cosine, no lingering (quick day/night transitions)
+ * strength=1: Heavy lingering (darkness persists through dawn/dusk)
+ */
+function getLingeringDarkness(date: Date, strength: number): number {
+  const hour = date.getHours() + date.getMinutes() / 60;
+  // Smooth cosine: 0 at noon, 1 at midnight
+  const t = hour / 24;
+  const rawDarkness = 0.5 * (1 + Math.cos(2 * Math.PI * t));
+  // Power curve: exponent < 1 makes mid-values darker, "lingering" in darkness
+  // exponent ranges from 1.0 (strength=0, no effect) to 0.2 (strength=1, heavy lingering)
+  const exponent = 1 - strength * 0.8;
+  return Math.pow(rawDarkness, exponent);
+}
+
+function getThemeBrightness(strength: number): number {
+  return 1 - getLingeringDarkness(new Date(), strength);
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const { settings, updateSettings } = useSettings();
+  const strength = settings.autoThemeStrength ?? 0.5;
+
   const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>(() => {
     if (settings.theme === 'auto') {
-      return resolveAutoTheme();
+      const brightness = getThemeBrightness(strength);
+      return resolveAutoTheme(brightness);
     }
     return settings.theme;
   });
   const [brightness, setBrightness] = useState<number>(() => {
-    return settings.theme === 'auto' ? getThemeBrightness() : 1;
+    return settings.theme === 'auto' ? getThemeBrightness(strength) : 1;
   });
 
   const setThemeMode = (mode: ThemeMode) => {
@@ -55,14 +72,15 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     }
 
     const resolve = () => {
-      setResolvedTheme(resolveAutoTheme());
-      setBrightness(getThemeBrightness());
+      const newBrightness = getThemeBrightness(strength);
+      setBrightness(newBrightness);
+      setResolvedTheme(resolveAutoTheme(newBrightness));
     };
 
     resolve();
     const interval = setInterval(resolve, AUTO_THEME_CHECK_INTERVAL_MS);
     return () => clearInterval(interval);
-  }, [settings.theme]);
+  }, [settings.theme, strength]);
 
   const value: ThemeContextValue = {
     themeMode: settings.theme,

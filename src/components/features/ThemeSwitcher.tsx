@@ -34,7 +34,11 @@ export function ThemeSwitcher() {
 
   return (
     <Tooltip title={`Switch to ${LABELS[nextMode]}`}>
-      <IconButton onClick={handleClick} color="inherit" size="large">
+      <IconButton
+        onClick={handleClick}
+        size="large"
+        sx={{ color: 'rgba(255, 255, 255, 0.9)' }}
+      >
         {ICONS[themeMode]}
       </IconButton>
     </Tooltip>

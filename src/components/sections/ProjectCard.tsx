@@ -47,6 +47,8 @@ export function ProjectCard({ project }: ProjectCardProps) {
             sx={{
               fontWeight: 700,
               mb: 0.5,
+              color: '#ffffff',
+              textShadow: '0 1px 4px rgba(0,0,0,0.6)',
             }}
           >
             {project.title}
