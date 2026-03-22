@@ -63,7 +63,7 @@ export function Navigation() {
             key={item.href}
             onClick={(e) => handleNavClick(e, itemId)}
             sx={{
-              color: isActive ? 'primary.main' : 'text.primary',
+              color: isActive ? 'primary.main' : 'rgba(255, 255, 255, 0.85)',
               fontWeight: isActive ? 600 : 400,
               fontSize: '0.95rem',
               cursor: 'pointer',
@@ -71,7 +71,7 @@ export function Navigation() {
               transition: 'all 0.2s ease',
               '&:hover': {
                 fontWeight: 600,
-                color: isActive ? 'primary.main' : 'text.primary',
+                color: 'primary.main',
               },
               ...(isActive && {
                 color: 'primary.main',
