@@ -1,17 +1,49 @@
 import { Box, Button } from '@mui/material';
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { NAV_ITEMS } from '@/utils/constants';
 import { useScrollSpy } from '@/hooks/useScrollSpy';
 
 export function Navigation() {
+  const location = useLocation();
   const sectionIds = NAV_ITEMS.map((item) => item.href.slice(1));
   const activeId = useScrollSpy(sectionIds);
 
+  // Detect hash changes and auto-scroll to the target section
+  useEffect(() => {
+    const currentHash = window.location.hash.slice(1);
+    if (currentHash && sectionIds.includes(currentHash)) {
+      // Small delay to ensure the page is fully rendered before scrolling
+      const timer = setTimeout(() => {
+        const element = document.getElementById(currentHash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [sectionIds, location.pathname]);
+
   const handleNavClick = (e: React.MouseEvent<HTMLButtonElement>, sectionId: string) => {
     e.preventDefault();
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      window.history.pushState(null, '', `#${sectionId}`);
+    const currentPath = window.location.pathname;
+    const isOnMainPage = currentPath === '/' || currentPath === '';
+
+    const navigateTo = () => {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+        window.history.replaceState(null, '', `#${sectionId}`);
+      }
+    };
+
+    if (!isOnMainPage) {
+      // If on logs or settings, navigate to main page first with hash
+      window.location.hash = `#${sectionId}`;
+      window.location.pathname = '/';
+    } else {
+      // Already on main page, just scroll
+      navigateTo();
     }
   };
 
@@ -35,13 +67,28 @@ export function Navigation() {
             color={isActive ? 'primary' : 'inherit'}
             sx={{
               fontWeight: isActive ? 600 : 400,
-              borderBottom: isActive ? '2px solid' : 'none',
-              borderColor: 'primary.main',
               fontSize: '0.95rem',
               cursor: 'pointer',
+              position: 'relative',
+              transition: 'all 0.2s ease',
               '&:hover': {
                 fontWeight: 600,
+                color: isActive ? 'primary.main' : 'text.primary',
               },
+              ...(isActive && {
+                color: 'primary.main',
+                '&::after': {
+                  content: '""',
+                  position: 'absolute',
+                  bottom: -8,
+                  left: '20%',
+                  right: '20%',
+                  height: '2px',
+                  borderRadius: '1px',
+                  bgcolor: 'primary.main',
+                  boxShadow: '0 0 8px currentColor',
+                },
+              }),
             }}
           >
             {item.label}

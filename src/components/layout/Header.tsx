@@ -44,11 +44,14 @@ export function Header() {
         position="sticky"
         elevation={scrolled ? 4 : 0}
         sx={{
-          transition: 'elevation 0.3s ease',
-          backgroundColor: 'background.paper',
+          transition: 'all 0.4s ease',
+          backgroundColor: scrolled ? 'rgba(12, 15, 26, 0.88)' : 'rgba(12, 15, 26, 0.35)',
+          backdropFilter: scrolled ? 'blur(20px)' : 'blur(6px)',
+          WebkitBackdropFilter: scrolled ? 'blur(20px)' : 'blur(6px)',
           color: 'text.primary',
           borderBottom: '1px solid',
-          borderColor: 'divider',
+          borderColor: scrolled ? 'rgba(255, 255, 255, 0.10)' : 'transparent',
+          boxShadow: scrolled ? '0 4px 32px rgba(0, 0, 0, 0.4)' : 'none',
         }}
       >
         <Container maxWidth="lg">
@@ -67,8 +70,11 @@ export function Header() {
                 fontWeight: 700,
                 color: 'primary.main',
                 textTransform: 'none',
+                transition: 'all 0.3s ease',
                 '&:hover': {
                   backgroundColor: 'transparent',
+                  textShadow: '0 0 16px currentColor',
+                  transform: 'scale(1.02)',
                 },
               }}
             >

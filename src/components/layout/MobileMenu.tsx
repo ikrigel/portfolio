@@ -8,6 +8,31 @@ interface MobileMenuProps {
 }
 
 export function MobileMenu({ open, onClose }: MobileMenuProps) {
+  const handleNavClick = (e: React.MouseEvent<HTMLButtonElement>, sectionId: string) => {
+    e.preventDefault();
+    const currentPath = window.location.pathname;
+    const isOnMainPage = currentPath === '/' || currentPath === '';
+
+    const navigateTo = () => {
+      onClose();
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+        window.history.replaceState(null, '', `#${sectionId}`);
+      }
+    };
+
+    if (!isOnMainPage) {
+      // If on logs or settings, navigate to main page first with hash
+      onClose();
+      window.location.hash = `#${sectionId}`;
+      window.location.pathname = '/';
+    } else {
+      // Already on main page, just scroll
+      navigateTo();
+    }
+  };
+
   return (
     <Drawer
       anchor="right"
@@ -33,22 +58,24 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
         </Typography>
 
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, flex: 1 }}>
-          {NAV_ITEMS.map((item) => (
-            <Button
-              key={item.href}
-              href={item.href}
-              variant="text"
-              fullWidth
-              sx={{
-                justifyContent: 'flex-start',
-                color: 'text.primary',
-                fontSize: '0.95rem',
-              }}
-              onClick={onClose}
-            >
-              {item.label}
-            </Button>
-          ))}
+          {NAV_ITEMS.map((item) => {
+            const sectionId = item.href.slice(1);
+            return (
+              <Button
+                key={item.href}
+                variant="text"
+                fullWidth
+                sx={{
+                  justifyContent: 'flex-start',
+                  color: 'text.primary',
+                  fontSize: '0.95rem',
+                }}
+                onClick={(e) => handleNavClick(e, sectionId)}
+              >
+                {item.label}
+              </Button>
+            );
+          })}
         </Box>
 
         <Divider sx={{ my: 2 }} />

@@ -92,6 +92,23 @@ function MainLayout() {
 }
 
 function MainPage() {
+  // When returning from logs/settings to main page, scroll to the target section or hero
+  useEffect(() => {
+    const hash = window.location.hash.slice(1);
+    if (hash) {
+      const timer = setTimeout(() => {
+        const element = document.getElementById(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'auto' });
+        }
+      }, 50);
+      return () => clearTimeout(timer);
+    } else {
+      // If no hash, scroll to top
+      window.scrollTo(0, 0);
+    }
+  }, []);
+
   return (
     <>
       <Hero />
