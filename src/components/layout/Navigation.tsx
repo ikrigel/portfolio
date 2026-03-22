@@ -26,8 +26,7 @@ export function Navigation() {
 
   const handleNavClick = (e: React.MouseEvent<HTMLButtonElement>, sectionId: string) => {
     e.preventDefault();
-    const currentPath = window.location.pathname;
-    const isOnMainPage = currentPath === '/' || currentPath === '';
+    const isOnMainPage = location.pathname === '/' || location.pathname === '';
 
     const navigateTo = () => {
       const element = document.getElementById(sectionId);
@@ -38,9 +37,8 @@ export function Navigation() {
     };
 
     if (!isOnMainPage) {
-      // If on logs or settings, navigate to main page first with hash
-      window.location.hash = `#${sectionId}`;
-      window.location.pathname = '/';
+      // If on logs or settings, navigate to main page with hash
+      window.location.href = `/#${sectionId}`;
     } else {
       // Already on main page, just scroll
       navigateTo();
@@ -64,8 +62,8 @@ export function Navigation() {
           <Button
             key={item.href}
             onClick={(e) => handleNavClick(e, itemId)}
-            color={isActive ? 'primary' : 'inherit'}
             sx={{
+              color: isActive ? 'primary.main' : 'text.primary',
               fontWeight: isActive ? 600 : 400,
               fontSize: '0.95rem',
               cursor: 'pointer',

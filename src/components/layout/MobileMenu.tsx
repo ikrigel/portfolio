@@ -1,4 +1,5 @@
 import { Drawer, Box, Button, Divider, Typography } from '@mui/material';
+import { useLocation } from 'react-router-dom';
 import { NAV_ITEMS } from '@/utils/constants';
 import { ThemeSwitcher } from '@/components/features/ThemeSwitcher';
 
@@ -8,10 +9,11 @@ interface MobileMenuProps {
 }
 
 export function MobileMenu({ open, onClose }: MobileMenuProps) {
+  const location = useLocation();
+
   const handleNavClick = (e: React.MouseEvent<HTMLButtonElement>, sectionId: string) => {
     e.preventDefault();
-    const currentPath = window.location.pathname;
-    const isOnMainPage = currentPath === '/' || currentPath === '';
+    const isOnMainPage = location.pathname === '/' || location.pathname === '';
 
     const navigateTo = () => {
       onClose();
@@ -23,10 +25,9 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
     };
 
     if (!isOnMainPage) {
-      // If on logs or settings, navigate to main page first with hash
+      // If on logs or settings, navigate to main page with hash
       onClose();
-      window.location.hash = `#${sectionId}`;
-      window.location.pathname = '/';
+      window.location.href = `/#${sectionId}`;
     } else {
       // Already on main page, just scroll
       navigateTo();
