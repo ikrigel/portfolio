@@ -92,20 +92,36 @@ function MainLayout() {
 }
 
 function MainPage() {
-  // When returning from logs/settings to main page, scroll to the target section or hero
+  // When returning from logs/settings to main page, scroll to the target section
   useEffect(() => {
-    const hash = window.location.hash.slice(1);
-    if (hash) {
+    // Check if there's a target section stored in sessionStorage (from navigation)
+    const targetSection = sessionStorage.getItem('targetSection');
+    if (targetSection) {
+      sessionStorage.removeItem('targetSection');
       const timer = setTimeout(() => {
-        const element = document.getElementById(hash);
+        const element = document.getElementById(targetSection);
         if (element) {
-          element.scrollIntoView({ behavior: 'auto' });
+          element.scrollIntoView({ behavior: 'smooth' });
+          // Update the URL hash for history
+          window.history.replaceState(null, '', `#${targetSection}`);
         }
-      }, 50);
+      }, 100);
       return () => clearTimeout(timer);
     } else {
-      // If no hash, scroll to top
-      window.scrollTo(0, 0);
+      // Check if there's a hash in the URL
+      const hash = window.location.hash.slice(1);
+      if (hash) {
+        const timer = setTimeout(() => {
+          const element = document.getElementById(hash);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 100);
+        return () => clearTimeout(timer);
+      } else {
+        // If no target, scroll to top
+        window.scrollTo(0, 0);
+      }
     }
   }, []);
 

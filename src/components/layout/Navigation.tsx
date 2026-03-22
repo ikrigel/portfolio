@@ -37,8 +37,9 @@ export function Navigation() {
     };
 
     if (!isOnMainPage) {
-      // If on logs or settings, navigate to main page with hash
-      window.location.href = `/#${sectionId}`;
+      // If on logs or settings, store target section and navigate to main page
+      sessionStorage.setItem('targetSection', sectionId);
+      window.location.href = '/#/';
     } else {
       // Already on main page, just scroll
       navigateTo();
