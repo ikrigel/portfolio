@@ -1,5 +1,5 @@
 import { Drawer, Box, Button, Divider, Typography } from '@mui/material';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { NAV_ITEMS } from '@/utils/constants';
 import { ThemeSwitcher } from '@/components/features/ThemeSwitcher';
 
@@ -10,6 +10,7 @@ interface MobileMenuProps {
 
 export function MobileMenu({ open, onClose }: MobileMenuProps) {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const handleNavClick = (e: React.MouseEvent<HTMLButtonElement>, sectionId: string) => {
     e.preventDefault();
@@ -28,7 +29,7 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
       // If on logs or settings, store target section and navigate to main page
       onClose();
       sessionStorage.setItem('targetSection', sectionId);
-      window.location.href = '/#/';
+      navigate('/');
     } else {
       // Already on main page, just scroll
       navigateTo();

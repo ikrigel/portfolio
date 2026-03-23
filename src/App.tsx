@@ -105,7 +105,7 @@ function MainPage() {
           // Update the URL hash for history
           window.history.replaceState(null, '', `#${targetSection}`);
         }
-      }, 100);
+      }, 300);
       return () => clearTimeout(timer);
     } else {
       // Check if there's a hash in the URL

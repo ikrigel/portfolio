@@ -1,11 +1,12 @@
 import { Box, Button } from '@mui/material';
 import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { NAV_ITEMS } from '@/utils/constants';
 import { useScrollSpy } from '@/hooks/useScrollSpy';
 
 export function Navigation() {
   const location = useLocation();
+  const navigate = useNavigate();
   const sectionIds = NAV_ITEMS.map((item) => item.href.slice(1));
   const activeId = useScrollSpy(sectionIds);
 
@@ -39,7 +40,7 @@ export function Navigation() {
     if (!isOnMainPage) {
       // If on logs or settings, store target section and navigate to main page
       sessionStorage.setItem('targetSection', sectionId);
-      window.location.href = '/#/';
+      navigate('/');
     } else {
       // Already on main page, just scroll
       navigateTo();
