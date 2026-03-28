@@ -20,6 +20,7 @@ import {
   Typography,
   IconButton,
   Tooltip,
+  Checkbox,
 } from '@mui/material';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -40,6 +41,8 @@ export function LogsViewer() {
   const [search, setSearch] = useState('');
   const [clearDialogOpen, setClearDialogOpen] = useState(false);
   const [deleteLogId, setDeleteLogId] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [deleteMultipleOpen, setDeleteMultipleOpen] = useState(false);
 
   const allLogs = getLogs();
 
@@ -69,6 +72,44 @@ export function LogsViewer() {
 
   const handleExportLog = (log: LogEntry) => {
     exportLog(log.id);
+  };
+
+  const handleSelectLog = (id: string) => {
+    const newSelected = new Set(selectedIds);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedIds(newSelected);
+  };
+
+  const handleSelectAll = () => {
+    if (selectedIds.size === filteredLogs.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filteredLogs.map((log) => log.id)));
+    }
+  };
+
+  const handleDeleteMultiple = () => {
+    selectedIds.forEach((id) => deleteLog(id));
+    setSelectedIds(new Set());
+    setDeleteMultipleOpen(false);
+  };
+
+  const handleExportMultiple = () => {
+    // Export multiple logs as a JSON array
+    const logsToExport = allLogs.filter((log) => selectedIds.has(log.id));
+    const blob = new Blob([JSON.stringify(logsToExport, null, 2)], {
+      type: 'application/json',
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `portfolio-logs-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -107,23 +148,59 @@ export function LogsViewer() {
         </Stack>
 
         <Stack direction="row" spacing={1}>
-          <Button
-            startIcon={<GetAppIcon />}
-            onClick={exportLogs}
-            variant="outlined"
-            size="small"
-          >
-            Export
-          </Button>
-          <Button
-            startIcon={<DeleteIcon />}
-            onClick={() => setClearDialogOpen(true)}
-            variant="outlined"
-            color="error"
-            size="small"
-          >
-            Clear
-          </Button>
+          {selectedIds.size > 0 && (
+            <>
+              <Typography variant="body2" sx={{ alignSelf: 'center', color: 'text.secondary' }}>
+                {selectedIds.size} selected
+              </Typography>
+              <Button
+                startIcon={<DownloadIcon />}
+                onClick={handleExportMultiple}
+                variant="outlined"
+                size="small"
+                color="primary"
+              >
+                Export Selected
+              </Button>
+              <Button
+                startIcon={<DeleteIcon />}
+                onClick={() => setDeleteMultipleOpen(true)}
+                variant="outlined"
+                color="error"
+                size="small"
+              >
+                Delete Selected
+              </Button>
+              <Button
+                onClick={() => setSelectedIds(new Set())}
+                variant="text"
+                size="small"
+              >
+                Clear Selection
+              </Button>
+            </>
+          )}
+          {selectedIds.size === 0 && (
+            <>
+              <Button
+                startIcon={<GetAppIcon />}
+                onClick={exportLogs}
+                variant="outlined"
+                size="small"
+              >
+                Export All
+              </Button>
+              <Button
+                startIcon={<DeleteIcon />}
+                onClick={() => setClearDialogOpen(true)}
+                variant="outlined"
+                color="error"
+                size="small"
+              >
+                Clear All
+              </Button>
+            </>
+          )}
         </Stack>
       </Paper>
 
@@ -141,6 +218,15 @@ export function LogsViewer() {
         <Table>
           <TableHead>
             <TableRow sx={{ backgroundColor: 'action.hover' }}>
+              <TableCell padding="checkbox" sx={{ width: 48 }}>
+                <Tooltip title={selectedIds.size === filteredLogs.length ? 'Deselect All' : 'Select All'}>
+                  <Checkbox
+                    checked={selectedIds.size === filteredLogs.length && filteredLogs.length > 0}
+                    indeterminate={selectedIds.size > 0 && selectedIds.size < filteredLogs.length}
+                    onChange={handleSelectAll}
+                  />
+                </Tooltip>
+              </TableCell>
               <TableCell>Time</TableCell>
               <TableCell>Level</TableCell>
               <TableCell>Action</TableCell>
@@ -152,7 +238,20 @@ export function LogsViewer() {
           <TableBody>
             {filteredLogs.length > 0 ? (
               filteredLogs.map((log) => (
-                <TableRow key={log.id} hover>
+                <TableRow
+                  key={log.id}
+                  hover
+                  selected={selectedIds.has(log.id)}
+                  sx={{
+                    backgroundColor: selectedIds.has(log.id) ? 'action.selected' : 'inherit',
+                  }}
+                >
+                  <TableCell padding="checkbox">
+                    <Checkbox
+                      checked={selectedIds.has(log.id)}
+                      onChange={() => handleSelectLog(log.id)}
+                    />
+                  </TableCell>
                   <TableCell sx={{ fontSize: '0.85rem' }}>
                     {new Date(log.timestamp).toLocaleTimeString()}
                   </TableCell>
@@ -197,7 +296,7 @@ export function LogsViewer() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={6} align="center" sx={{ py: 3 }}>
+                <TableCell colSpan={7} align="center" sx={{ py: 3 }}>
                   No logs found
                 </TableCell>
               </TableRow>
@@ -238,6 +337,24 @@ export function LogsViewer() {
           <Button onClick={() => setDeleteLogId(null)}>Cancel</Button>
           <Button onClick={handleDeleteLog} color="error" variant="contained">
             Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={deleteMultipleOpen}
+        onClose={() => setDeleteMultipleOpen(false)}
+      >
+        <DialogTitle>Delete {selectedIds.size} log entries?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            This action cannot be undone. All {selectedIds.size} selected log entries will be permanently deleted.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteMultipleOpen(false)}>Cancel</Button>
+          <Button onClick={handleDeleteMultiple} color="error" variant="contained">
+            Delete {selectedIds.size}
           </Button>
         </DialogActions>
       </Dialog>
