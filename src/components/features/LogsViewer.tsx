@@ -18,10 +18,13 @@ import {
   DialogActions,
   Container,
   Typography,
+  IconButton,
+  Tooltip,
 } from '@mui/material';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import DeleteIcon from '@mui/icons-material/Delete';
-import type { LogLevel } from '@/types';
+import DownloadIcon from '@mui/icons-material/Download';
+import type { LogLevel, LogEntry } from '@/types';
 import { useLogger } from '@/hooks/useLogger';
 
 const LOG_LEVELS: LogLevel[] = ['verbose', 'info', 'error'];
@@ -32,10 +35,11 @@ const LEVEL_COLORS: Record<Exclude<LogLevel, 'none'>, 'default' | 'warning' | 'e
 };
 
 export function LogsViewer() {
-  const { getLogs, clearLogs, exportLogs } = useLogger();
+  const { getLogs, clearLogs, exportLogs, deleteLog, exportLog } = useLogger();
   const [filter, setFilter] = useState<LogLevel | 'all'>('all');
   const [search, setSearch] = useState('');
   const [clearDialogOpen, setClearDialogOpen] = useState(false);
+  const [deleteLogId, setDeleteLogId] = useState<string | null>(null);
 
   const allLogs = getLogs();
 
@@ -54,6 +58,17 @@ export function LogsViewer() {
   const handleClearConfirm = () => {
     clearLogs();
     setClearDialogOpen(false);
+  };
+
+  const handleDeleteLog = () => {
+    if (deleteLogId) {
+      deleteLog(deleteLogId);
+      setDeleteLogId(null);
+    }
+  };
+
+  const handleExportLog = (log: LogEntry) => {
+    exportLog(log.id);
   };
 
   return (
@@ -131,6 +146,7 @@ export function LogsViewer() {
               <TableCell>Action</TableCell>
               <TableCell>Details</TableCell>
               <TableCell>Page</TableCell>
+              <TableCell align="right" sx={{ width: 100 }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -155,11 +171,33 @@ export function LogsViewer() {
                     {log.details || '-'}
                   </TableCell>
                   <TableCell sx={{ fontSize: '0.85rem' }}>{log.page}</TableCell>
+                  <TableCell align="right">
+                    <Stack direction="row" spacing={0.5} sx={{ justifyContent: 'flex-end' }}>
+                      <Tooltip title="Export">
+                        <IconButton
+                          size="small"
+                          onClick={() => handleExportLog(log)}
+                          sx={{ color: 'primary.main' }}
+                        >
+                          <DownloadIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Delete">
+                        <IconButton
+                          size="small"
+                          onClick={() => setDeleteLogId(log.id)}
+                          sx={{ color: 'error.main' }}
+                        >
+                          <DeleteIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </Stack>
+                  </TableCell>
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={5} align="center" sx={{ py: 3 }}>
+                <TableCell colSpan={6} align="center" sx={{ py: 3 }}>
                   No logs found
                 </TableCell>
               </TableRow>
@@ -182,6 +220,24 @@ export function LogsViewer() {
           <Button onClick={() => setClearDialogOpen(false)}>Cancel</Button>
           <Button onClick={handleClearConfirm} color="error" variant="contained">
             Clear All
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={deleteLogId !== null}
+        onClose={() => setDeleteLogId(null)}
+      >
+        <DialogTitle>Delete log entry?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            This action cannot be undone. The log entry will be permanently deleted.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteLogId(null)}>Cancel</Button>
+          <Button onClick={handleDeleteLog} color="error" variant="contained">
+            Delete
           </Button>
         </DialogActions>
       </Dialog>

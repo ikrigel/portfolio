@@ -59,3 +59,24 @@ export function exportLogsAsJSON(): void {
   a.click();
   URL.revokeObjectURL(url);
 }
+
+export function deleteLog(id: string): void {
+  const store = loadStore();
+  store.entries = store.entries.filter((entry) => entry.id !== id);
+  saveStore(store);
+}
+
+export function exportLogAsJSON(id: string): void {
+  const log = getLogs().find((entry) => entry.id === id);
+  if (!log) return;
+
+  const blob = new Blob([JSON.stringify(log, null, 2)], {
+    type: 'application/json',
+  });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `log-${log.timestamp.slice(0, 10)}-${log.id}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}

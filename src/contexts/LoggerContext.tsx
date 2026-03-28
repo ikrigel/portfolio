@@ -4,7 +4,7 @@ import {
 } from 'react';
 import type { ReactNode } from 'react';
 import type { LogEntry, LogLevel } from '@/types';
-import { appendLog, getLogs, clearLogs, exportLogsAsJSON } from '@/services/logService';
+import { appendLog, getLogs, clearLogs, exportLogsAsJSON, deleteLog, exportLogAsJSON } from '@/services/logService';
 import { getItem } from '@/services/storageService';
 import { DEFAULT_SETTINGS } from '@/types/settings';
 
@@ -13,6 +13,8 @@ interface LoggerContextValue {
   getLogs: () => LogEntry[];
   clearLogs: () => void;
   exportLogs: () => void;
+  deleteLog: (id: string) => void;
+  exportLog: (id: string) => void;
   logLevel: LogLevel;
 }
 
@@ -45,6 +47,8 @@ export function LoggerProvider({ children }: { children: ReactNode }) {
     getLogs,
     clearLogs,
     exportLogs: exportLogsAsJSON,
+    deleteLog,
+    exportLog: exportLogAsJSON,
     logLevel: currentLogLevel,
   };
 
