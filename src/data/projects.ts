@@ -107,6 +107,26 @@ export const PROJECTS: Project[] = [
     featured: false,
     category: 'tool',
   },
+  {
+    id: 'south-lebanon-map',
+    title: 'South Lebanon Map',
+    description: 'Analytical mapping dashboard with layered visualization, incident filtering, distance measurement, and privacy-first local storage design.',
+    technologies: ['React', 'TypeScript', 'Vite', 'Leaflet', 'Web Speech API', 'Geolocation'],
+    liveUrl: 'https://south-lebanon-map.vercel.app',
+    githubUrl: 'https://github.com/ikrigel/south-lebanon-map',
+    featured: false,
+    category: 'tool',
+  },
+  {
+    id: 'silent',
+    title: 'Silent',
+    description: 'Emergency alert management app for scheduling alert silencing periods with cross-platform support (web & Android) and activity logging.',
+    technologies: ['React 18', 'TypeScript', 'MUI v5', 'Firebase', 'Zustand', 'Capacitor', 'Playwright'],
+    liveUrl: 'https://silent-app.vercel.app',
+    githubUrl: 'https://github.com/ikrigel/silent',
+    featured: true,
+    category: 'web',
+  },
 ];
 
 export const FEATURED_PROJECTS = PROJECTS.filter(p => p.featured);
