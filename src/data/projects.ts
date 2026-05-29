@@ -122,7 +122,7 @@ export const PROJECTS: Project[] = [
     title: 'Silent',
     description: 'Emergency alert management app for scheduling alert silencing periods with cross-platform support (web & Android) and activity logging.',
     technologies: ['React 18', 'TypeScript', 'MUI v5', 'Firebase', 'Zustand', 'Capacitor', 'Playwright'],
-    liveUrl: 'https://silent-app.vercel.app',
+    liveUrl: 'https://silent-eight.vercel.app/',
     githubUrl: 'https://github.com/ikrigel/silent',
     featured: true,
     category: 'web',
